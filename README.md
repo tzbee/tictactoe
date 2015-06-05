@@ -1,7 +1,7 @@
 Description
 ==========
 
-A simple tic tac toe implementation sith html5 canvas 
+A simple tic tac toe implementation with html5 canvas 
 
 Build
 ==========
