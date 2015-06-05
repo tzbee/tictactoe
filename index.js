@@ -1,6 +1,8 @@
 var canvas = document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
 
+var playerTurnBox = document.getElementById('playerTurnBox');
+
 var TicTacToe = require('./tic-tac-toe');
 
 var model = new TicTacToe();
@@ -20,6 +22,8 @@ function render(ctx) {
 			ctx.fillRect(squareSize * j, squareSize * i, squareSize, squareSize);
 		}
 	}
+
+	updatePlayerTurnBox(model.turn);
 }
 
 function onClick(event) {
@@ -49,3 +53,7 @@ function onClick(event) {
 }
 
 canvas.addEventListener('mousedown', onClick, false);
+
+function updatePlayerTurnBox(playerTurn) {
+	playerTurnBox.innerHTML = 'Turn: ' + (playerTurn === 'x' ? 'red' : 'blue');
+}
