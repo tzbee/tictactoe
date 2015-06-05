@@ -13,6 +13,8 @@ render(ctx);
 function render(ctx) {
 	var grid = model.grid;
 
+	// Render grid content
+
 	for (var i = 0; i < 3; i++) {
 		for (var j = 0; j < 3; j++) {
 			var piece = grid[i][j];
@@ -23,6 +25,30 @@ function render(ctx) {
 		}
 	}
 
+	// Render grid internal edges
+
+	ctx.beginPath();
+	ctx.moveTo(squareSize, 0);
+	ctx.lineTo(squareSize, 300);
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.moveTo(squareSize * 2, 0);
+	ctx.lineTo(squareSize * 2, 300);
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.moveTo(0, squareSize);
+	ctx.lineTo(300, squareSize);
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.moveTo(0, squareSize * 2);
+	ctx.lineTo(300, squareSize * 2);
+	ctx.stroke();
+
+	// Update player turn notification
+	
 	updatePlayerTurnBox(model.turn);
 }
 
@@ -34,7 +60,7 @@ function onClick(event) {
 	var gridPos = [Math.floor(x / squareSize), Math.floor(y / squareSize)];
 
 	// Fix accuracy issues on the edges of boxes
-	
+
 	var gridRow = gridPos[0];
 	var gridColumn = gridPos[1];
 
