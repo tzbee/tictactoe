@@ -33,6 +33,13 @@ function onClick(event) {
 		y = event.pageX;
 	var gridPos = [Math.floor(x / squareSize), Math.floor(y / squareSize)];
 
+	// Fix accuracy issues on the edges of boxes
+	
+	var gridRow = gridPos[0];
+	var gridColumn = gridPos[1];
+
+	gridPos = [gridRow < 0 ? 0 : gridRow > 2 ? 2 : gridRow, gridColumn < 0 ? 0 : gridColumn > 2 ? 2 : gridColumn];
+
 	model.play(gridPos);
 
 	// Render the game
