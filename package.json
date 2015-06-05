@@ -1,0 +1,26 @@
+{
+  "name": "tic-tac-toe",
+  "version": "1.0.0",
+  "description": "Javascript implementation of Tic Tac Toe game",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "tzbee",
+  "license": "MIT",
+  "jshintConfig": {
+    "node": true,
+    "strict": false,
+    "mocha": true
+  },
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [
+    "html5",
+    "game"
+  ],
+  "devDependencies": {
+    "mocha": "*"
+  }
+}
