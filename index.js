@@ -89,6 +89,8 @@ function onClick(event) {
 }
 
 function aiPlays() {
+	if (model.gameOver || model.turn !== ai.side) return;
+
 	ai.getNextMove(model, function(nextMove) {
 		hideSpinner();
 		play(nextMove);
