@@ -13,6 +13,8 @@ var ai = new Ai('x');
 
 render(ctx);
 
+hideSpinner();
+
 function render(ctx) {
 	var grid = model.grid;
 
@@ -88,10 +90,28 @@ function onClick(event) {
 
 function aiPlays() {
 	ai.getNextMove(model, function(nextMove) {
-		console.log('Done');
+		hideSpinner();
 		play(nextMove);
 	});
-	console.log('Loading');
+	showSpinner();
+}
+
+function showSpinner() {
+	var classes = ' fa fa-spinner fa-spin';
+
+	var x = document.getElementsByClassName('spinner');
+
+	for (var i = 0; i < x.length; i++) {
+		x[i].className += classes;
+	}
+}
+
+function hideSpinner() {
+	var x = document.getElementsByClassName('spinner');
+
+	for (var i = 0; i < x.length; i++) {
+		x[i].className = 'spinner';
+	}
 }
 
 function play(pos) {
