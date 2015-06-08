@@ -8,6 +8,9 @@ var TicTacToe = require('./tic-tac-toe');
 var model = new TicTacToe();
 var squareSize = 100;
 
+var Ai = require('./ai.js');
+var ai = new Ai('x');
+
 render(ctx);
 
 function render(ctx) {
@@ -48,12 +51,22 @@ function render(ctx) {
 	ctx.stroke();
 
 	// Update player turn notification
-	
+
 	updatePlayerTurnBox(model.turn);
 }
 
+var playerSide = 'o';
+
+if (!isPlayerSTurn()) {
+	aiPlays();
+}
+
+function isPlayerSTurn() {
+	return model.turn === playerSide;
+}
+
 function onClick(event) {
-	if (model.gameOver) return;
+	if (model.gameOver || !isPlayerSTurn()) return;
 
 	var x = event.pageY,
 		y = event.pageX;
@@ -66,7 +79,29 @@ function onClick(event) {
 
 	gridPos = [gridRow < 0 ? 0 : gridRow > 2 ? 2 : gridRow, gridColumn < 0 ? 0 : gridColumn > 2 ? 2 : gridColumn];
 
-	model.play(gridPos);
+	var validMove = play(gridPos);
+
+	if (validMove) {
+		aiPlays();
+	}
+}
+
+function aiPlays() {
+	ai.getNextMove(model, function(nextMove) {
+		console.log('Done');
+		play(nextMove);
+	});
+	console.log('Loading');
+}
+
+function play(pos) {
+
+	// Play
+	var validMove = model.play(pos);
+
+	if (!validMove) {
+		return false;
+	}
 
 	// Render the game
 	render(ctx);
@@ -83,6 +118,8 @@ function onClick(event) {
 			render(ctx);
 		}
 	}
+
+	return true;
 }
 
 canvas.addEventListener('mousedown', onClick, false);

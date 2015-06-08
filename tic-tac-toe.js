@@ -3,7 +3,7 @@ module.exports = TicTacToe;
 function TicTacToe() {
 	this.gameOver = false;
 	this.winner = '';
-	this.turn = 'x';
+	this.turn = 'o';
 
 	this.grid = [
 		['', '', ''],
@@ -15,16 +15,20 @@ function TicTacToe() {
 		var side = this.turn;
 
 		if (!pos || !side || (side !== 'x' && side !== 'o')) {
-			return;
+			return false;
 		}
 
 		if (this.isValidPosition(pos)) {
 			this.grid[pos[0]][pos[1]] = side;
 			this.turn = this.turn === 'x' ? 'o' : 'x';
+		} else {
+			return false;
 		}
 
 		this.winner = this.checkWinner();
 		if (this.winner || this.isFullGrid()) this.gameOver = true;
+
+		return true;
 	};
 
 	this.isValidPosition = function(pos) {
