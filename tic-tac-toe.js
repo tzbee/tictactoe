@@ -1,9 +1,10 @@
 module.exports = TicTacToe;
 
-function TicTacToe() {
+function TicTacToe(firstTurn) {
+	this.firstTurn = firstTurn ||  'o';
 	this.gameOver = false;
 	this.winner = '';
-	this.turn = 'o';
+	this.turn = this.firstTurn;
 
 	this.grid = [
 		['', '', ''],
@@ -113,7 +114,7 @@ function TicTacToe() {
 	this.reset = function() {
 		this.gameOver = false;
 		this.winner = '';
-		this.turn = 'o';
+		this.turn = this.firstTurn;
 
 		for (var i = 0; i < 3; i++) {
 			for (var j = 0; j < 3; j++) {

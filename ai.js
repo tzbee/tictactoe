@@ -78,3 +78,9 @@ AIPlayer.prototype.getNextMove = function(game, done) {
 		done(self.choice);
 	}, 0);
 };
+
+var gameTree;
+
+function buildGameTree(game) {
+
+}

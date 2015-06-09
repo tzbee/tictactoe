@@ -1,19 +1,32 @@
-var canvas = document.getElementById('myCanvas');
+var canvas = document.getElementById('grid');
 var ctx = canvas.getContext('2d');
-
-var playerTurnBox = document.getElementById('playerTurnBox');
 
 var TicTacToe = require('./tic-tac-toe');
 
-var model = new TicTacToe();
 var squareSize = 100;
 
 var Ai = require('./ai.js');
-var ai = new Ai('x');
+
+var sides = {
+	ai: 'x',
+	player: 'o'
+};
+
+var ai = new Ai(sides.ai);
+var firstTurn = sides.ai;
+
+var model = new TicTacToe(firstTurn);
+model.gameOver = true;
 
 render(ctx);
 
-hideSpinner();
+function start() {
+	model.gameOver = false;
+
+	if (isTurnOf('ai')) {
+		aiPlays();
+	}
+}
 
 function render(ctx) {
 	var grid = model.grid;
@@ -51,24 +64,14 @@ function render(ctx) {
 	ctx.moveTo(0, squareSize * 2);
 	ctx.lineTo(300, squareSize * 2);
 	ctx.stroke();
-
-	// Update player turn notification
-
-	updatePlayerTurnBox(model.turn);
 }
 
-var playerSide = 'o';
-
-if (!isPlayerSTurn()) {
-	aiPlays();
-}
-
-function isPlayerSTurn() {
-	return model.turn === playerSide;
+function isTurnOf(side) {
+	return model.turn === sides[side];
 }
 
 function onClick(event) {
-	if (model.gameOver || !isPlayerSTurn()) return;
+	if (model.gameOver || !isTurnOf('player')) return;
 
 	var x = event.pageY,
 		y = event.pageX;
@@ -89,7 +92,7 @@ function onClick(event) {
 }
 
 function aiPlays() {
-	if (model.gameOver || model.turn !== ai.side) return;
+	if (model.gameOver || !isTurnOf('ai')) return;
 
 	ai.getNextMove(model, function(nextMove) {
 		hideSpinner();
@@ -144,8 +147,5 @@ function play(pos) {
 	return true;
 }
 
+document.getElementById('theButton').addEventListener('click', start);
 canvas.addEventListener('mousedown', onClick, false);
-
-function updatePlayerTurnBox(playerTurn) {
-	playerTurnBox.innerHTML = 'Turn: ' + (playerTurn === 'x' ? 'red' : 'blue');
-}
