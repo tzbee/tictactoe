@@ -1,3 +1,5 @@
+var Thinker = require('./thinker');
+
 var canvas = document.getElementById('gridCanvas');
 var ctx = canvas.getContext('2d');
 var theButton = document.getElementById('theButton');
@@ -18,9 +20,9 @@ var tokens = {
 
 var turn = 'ai';
 var gameOver = true;
-var winningLine = [];
 var imgCache;
 var sprites;
+var thinker = new Thinker(document.getElementById('thinker'));
 
 init();
 
@@ -67,6 +69,9 @@ function init() {
 
 			theButton.addEventListener('click', start);
 			canvas.addEventListener('mousedown', onClick, false);
+
+			thinker.start();
+
 		});
 	}
 
@@ -74,6 +79,7 @@ function init() {
 
 function start() {
 	gameOver = false;
+	thinker.stop();
 
 	if (turn === 'ai') {
 		aiPlays(grid, function() {
@@ -98,7 +104,7 @@ function render(grid, ctx) {
 				var pieceSprite = sprites[piece];
 				var offset = 10;
 				ctx.drawImage(pieceSprite.img, pieceSprite.pos[0], pieceSprite.pos[1], pieceSprite.size[0], pieceSprite.size[1], SQUARE_SIZE * j + offset, SQUARE_SIZE * i + offset, SQUARE_SIZE - offset * 2, SQUARE_SIZE - offset * 2);
-			} 
+			}
 		}
 	}
 
@@ -145,16 +151,21 @@ function nextTurn() {
 	}
 }
 
+function getMousePos(event) {
+	var rect = canvas.getBoundingClientRect();
+
+	var x = event.clientX - rect.left;
+	var y = event.clientY - rect.top;
+
+	return [x, y];
+}
+
 function onClick(event) {
 	if (gameOver || turn !== 'player') return;
 
-	var x = event.y,
-		y = event.x;
+	var mousePos = getMousePos(event);
 
-	x -= canvas.offsetLeft;
-	y -= canvas.offsetTop;
-
-	var gridPos = [Math.floor(x / SQUARE_SIZE), Math.floor(y / SQUARE_SIZE)];
+	var gridPos = [Math.floor(mousePos[1] / SQUARE_SIZE), Math.floor(mousePos[0] / SQUARE_SIZE)];
 
 	var validMove = play(grid, tokens.player, gridPos);
 
