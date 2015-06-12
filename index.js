@@ -18,6 +18,7 @@ var tokens = {
 
 var turn = 'ai';
 var gameOver = true;
+var winningLine = [];
 var imgCache;
 var sprites;
 
@@ -46,12 +47,12 @@ function init() {
 			imgCache = imgs;
 
 			sprites = {
-				'x': {
+				'o': {
 					img: imgCache['img/tic-tac-toe-sprites.png'],
 					pos: [0, 0],
 					size: [263, 263]
 				},
-				'o': {
+				'x': {
 					img: imgCache['img/tic-tac-toe-sprites.png'],
 					pos: [305, 4],
 					size: [294, 266]
