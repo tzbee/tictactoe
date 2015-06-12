@@ -83,6 +83,11 @@ function start() {
 }
 
 function render(grid, ctx) {
+	//Clear canvas
+
+	ctx.fillStyle = '#FFFFFF';
+	ctx.fillRect(0, 0, GRID_SIZE, GRID_SIZE);
+
 	// Render grid content
 
 	for (var i = 0; i < 3; i++) {
@@ -93,10 +98,7 @@ function render(grid, ctx) {
 				var pieceSprite = sprites[piece];
 				var offset = 10;
 				ctx.drawImage(pieceSprite.img, pieceSprite.pos[0], pieceSprite.pos[1], pieceSprite.size[0], pieceSprite.size[1], SQUARE_SIZE * j + offset, SQUARE_SIZE * i + offset, SQUARE_SIZE - offset * 2, SQUARE_SIZE - offset * 2);
-			} else {
-				ctx.fillStyle = '#FFFFFF';
-				ctx.fillRect(SQUARE_SIZE * j, SQUARE_SIZE * i, SQUARE_SIZE, SQUARE_SIZE);
-			}
+			} 
 		}
 	}
 
