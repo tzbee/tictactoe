@@ -1,21 +1,31 @@
 module.exports = Messenger;
 
-function Messenger(element) {
-	this.element = element;
+function Messenger(messageBox, firstToPlayBox, aiPiece) {
+	this.messageBox = messageBox;
+	this.firstToPlayBox = firstToPlayBox;
 
 	this.write = function(message) {
+		this.messageBox.style.display = 'block';
+
 		if (message.length > 6) {
-			this.element.style.fontSize = message.length > 6 ? '35px' : '70px';
+			this.messageBox.style.fontSize = message.length > 6 ? '35px' : '70px';
 		}
 
-		this.element.innerHTML = message;
+		this.messageBox.innerHTML = message;
 	};
 
-	this.enableButton = function() {
-		this.element.className += 'button';
+	this.thinking = function() {
+		this.firstToPlayBox.style.visibility = 'hidden';
+		this.write('I am thinking..');
 	};
 
-	this.disableButton = function() {
-		this.element.className = '';
+	this.humanTurn = function() {
+		this.firstToPlayBox.style.visibility = 'hidden';
+		this.write('Your turn, human');
+	};
+
+	this.gameIsOver = function(winner) {
+		this.write(!winner ? 'Draw' : winner === aiPiece ? 'I win' : 'This..is impossible');
+		this.firstToPlayBox.style.visibility = 'visible';
 	};
 }

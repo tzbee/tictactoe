@@ -1,6 +1,5 @@
 var canvas = document.getElementById('gridCanvas');
 var ctx = canvas.getContext('2d');
-var messageBox = document.getElementById('messageBox');
 var Messenger = require('./messenger');
 
 var GRID_SIZE = canvas.width;
@@ -17,13 +16,11 @@ var tokens = {
 	ai: 'o'
 };
 
-var turn = 'ai';
-var gameOver = true;
+var enableGameToHuman = false;
 var imgCache;
 var sprites;
 
-var messenger = new Messenger(document.getElementById('messageBox'));
-messenger.enableButton();
+var messenger = new Messenger(document.getElementById('messageBox'), document.getElementById('firstToPlayBox'),tokens.ai);
 
 init();
 
@@ -66,23 +63,36 @@ function init() {
 
 			render(grid, ctx);
 
-			// Enable user control
-
-			messageBox.addEventListener('click', start);
 			canvas.addEventListener('mousedown', onClick, false);
 
+			document.getElementById('humanFirst').onclick = function() {
+				start('human');
+			};
+
+			document.getElementById('aiFirst').onclick = function() {
+				start('ai');
+			};
 		});
 	}
-
 }
 
-function start() {
-	gameOver = false;
-	
-	if (turn === 'ai') {
-		aiPlays(grid, function() {
-			nextTurn();
-		});
+function start(firstTurn) {
+	emptyGrid(grid);
+
+	if (firstTurn === 'ai') {
+		aiPlays(grid);
+	} else if (firstTurn === 'human') {
+		showHumanTurn();
+		enableGameToHuman = true;
+	}
+}
+
+function emptyGrid(grid) {
+	for (var i = 0; i < 3; i++) {
+		for (var j = 0; j < 3; j++) {
+			grid[i][j] = '';
+			render(grid, ctx);
+		}
 	}
 }
 
@@ -131,22 +141,12 @@ function render(grid, ctx) {
 	ctx.stroke();
 }
 
-function nextTurn() {
+function renderAndCheckWinner() {
 	render(grid, ctx);
 	var winner = checkWinner(grid);
 
 	if (winner || isFullGrid(grid)) {
 		showWinner(winner);
-	} else {
-
-		turn = turn === 'ai' ? 'player' : 'ai';
-
-		if (turn === 'ai') {
-			aiPlays(grid, function() {
-				nextTurn();
-				showHumanTurn();
-			});
-		}
 	}
 }
 
@@ -160,7 +160,7 @@ function getMousePos(event) {
 }
 
 function onClick(event) {
-	if (gameOver || turn !== 'player') return;
+	if (!enableGameToHuman) return;
 
 	var mousePos = getMousePos(event);
 
@@ -168,38 +168,33 @@ function onClick(event) {
 
 	var validMove = play(grid, tokens.player, gridPos);
 
-	if (validMove) nextTurn();
+	if (validMove) {
+		renderAndCheckWinner();
+		aiPlays(grid);
+	}
 }
 
-function aiPlays(grid, done) {
+function aiPlays(grid) {
 	getNextMove(grid, function(nextMove) {
 		play(grid, tokens.ai, nextMove);
 		showHumanTurn();
-		done();
+		renderAndCheckWinner();
+		enableGameToHuman = true;
 	});
 
 	showAiIsThinking();
 }
 
 function showAiIsThinking() {
-	messenger.disableButton();
-	messenger.write('I am thinking..');
+	messenger.thinking();
 }
 
 function showHumanTurn() {
-	messenger.disableButton();
-	messenger.write('Your turn, human');
+	messenger.humanTurn();
 }
 
 function showWinner(winner) {
-	var message = winner ? winner + ' wins!' : 'Draw!';
-
-	var r = confirm(message + ', replay?');
-
-	if (r === true) {
-		reset(grid);
-		render(grid, ctx);
-	}
+	messenger.gameIsOver(winner);
 }
 
 function checkWinner(grid) {
@@ -285,17 +280,6 @@ function nbOfOccurences(piece, array) {
 	});
 
 	return nbOfOcc;
-}
-
-function reset(grid) {
-	gameOver = false;
-	turn = 'player';
-
-	for (var i = 0; i < 3; i++) {
-		for (var j = 0; j < 3; j++) {
-			grid[i][j] = '';
-		}
-	}
 }
 
 function isFullGrid(grid) {

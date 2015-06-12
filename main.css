@@ -3,8 +3,11 @@
     src: url(font/Mumsies.ttf);
 } 
 
-#messageBox {
+.handWritten {
 	font-family: messy;
+}
+
+#messageBox {
 	width:300px;
 	padding-left: 0;
 	padding-right: 0;
@@ -12,8 +15,6 @@
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
-	border: none;
-	background-color: #FFFFFF;
 	font-size: 70px;
 }
 
@@ -28,4 +29,9 @@
 	margin-right: auto;
 	display: block;
 	width: 500px;
+}
+
+span.button {
+	margin-left:40px;
+	margin-right:40px;
 }
