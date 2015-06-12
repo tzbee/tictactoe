@@ -1,8 +1,7 @@
-var Thinker = require('./thinker');
-
 var canvas = document.getElementById('gridCanvas');
 var ctx = canvas.getContext('2d');
-var theButton = document.getElementById('theButton');
+var messageBox = document.getElementById('messageBox');
+var Messenger = require('./messenger');
 
 var GRID_SIZE = canvas.width;
 var SQUARE_SIZE = GRID_SIZE / 3;
@@ -22,7 +21,9 @@ var turn = 'ai';
 var gameOver = true;
 var imgCache;
 var sprites;
-var thinker = new Thinker(document.getElementById('thinker'));
+
+var messenger = new Messenger(document.getElementById('messageBox'));
+messenger.enableButton();
 
 init();
 
@@ -67,10 +68,8 @@ function init() {
 
 			// Enable user control
 
-			theButton.addEventListener('click', start);
+			messageBox.addEventListener('click', start);
 			canvas.addEventListener('mousedown', onClick, false);
-
-			thinker.start();
 
 		});
 	}
@@ -79,8 +78,7 @@ function init() {
 
 function start() {
 	gameOver = false;
-	thinker.stop();
-
+	
 	if (turn === 'ai') {
 		aiPlays(grid, function() {
 			nextTurn();
@@ -146,6 +144,7 @@ function nextTurn() {
 		if (turn === 'ai') {
 			aiPlays(grid, function() {
 				nextTurn();
+				showHumanTurn();
 			});
 		}
 	}
@@ -174,30 +173,22 @@ function onClick(event) {
 
 function aiPlays(grid, done) {
 	getNextMove(grid, function(nextMove) {
-		hideSpinner();
 		play(grid, tokens.ai, nextMove);
+		showHumanTurn();
 		done();
 	});
 
-	showSpinner();
+	showAiIsThinking();
 }
 
-function showSpinner() {
-	var classes = ' fa fa-spinner fa-spin';
-
-	var x = document.getElementsByClassName('spinner');
-
-	for (var i = 0; i < x.length; i++) {
-		x[i].className += classes;
-	}
+function showAiIsThinking() {
+	messenger.disableButton();
+	messenger.write('I am thinking..');
 }
 
-function hideSpinner() {
-	var x = document.getElementsByClassName('spinner');
-
-	for (var i = 0; i < x.length; i++) {
-		x[i].className = 'spinner';
-	}
+function showHumanTurn() {
+	messenger.disableButton();
+	messenger.write('Your turn, human');
 }
 
 function showWinner(winner) {
@@ -378,5 +369,5 @@ function getNextMove(grid, done) {
 	setTimeout(function() {
 		minimax(grid, true);
 		done(aiChoice);
-	}, 0);
+	}, 100);
 }

@@ -4,25 +4,22 @@
 	<head>
 		<title>GAME</title>
 		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="main.css">
 	</head>
 
 	<body>
-		<canvas id="gridCanvas" width="450" height="450" style="padding-left: 0;
-			padding-right: 0;
-		    margin-left: auto;
-		    margin-right: auto;
-		    display: block;"
-		>
+
+	<div id="container">
+		<canvas id="gridCanvas" width="450" height="450">
 			Your browser does not support the HTML5 canvas tag.
 		</canvas>
 
-		<button id='theButton'>Start game</button>
+		<div id='messageBox' class="">Start</div>
 
 		<div class='spinner'></div>
+	</div>
 
-		<div id='thinker'></div>
-
-		<script src="build/bundle.js">
-		</script>
+	<script src="build/bundle.js">
+	</script>
 	</body>
 </html>
