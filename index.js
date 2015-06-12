@@ -20,7 +20,7 @@ var enableGameToHuman = false;
 var imgCache;
 var sprites;
 
-var messenger = new Messenger(document.getElementById('messageBox'), document.getElementById('firstToPlayBox'),tokens.ai);
+var messenger = new Messenger(document.getElementById('messageBox'), document.getElementById('firstToPlayBox'), tokens.ai);
 
 init();
 
@@ -146,8 +146,12 @@ function renderAndCheckWinner() {
 	var winner = checkWinner(grid);
 
 	if (winner || isFullGrid(grid)) {
+		enableGameToHuman = false;
 		showWinner(winner);
+		return true;
 	}
+
+	return false;
 }
 
 function getMousePos(event) {
@@ -169,8 +173,7 @@ function onClick(event) {
 	var validMove = play(grid, tokens.player, gridPos);
 
 	if (validMove) {
-		renderAndCheckWinner();
-		aiPlays(grid);
+		if (!renderAndCheckWinner()) aiPlays(grid);
 	}
 }
 
@@ -179,7 +182,8 @@ function aiPlays(grid) {
 		play(grid, tokens.ai, nextMove);
 		showHumanTurn();
 		renderAndCheckWinner();
-		enableGameToHuman = true;
+
+		if (!renderAndCheckWinner()) enableGameToHuman = true;
 	});
 
 	showAiIsThinking();
