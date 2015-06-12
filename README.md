@@ -3,6 +3,11 @@ Description
 
 A simple tic tac toe implementation with html5 canvas 
 
+Example
+==========
+
+https://tzbee.herokuapp.com/
+
 Build
 ==========
 
