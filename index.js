@@ -5,7 +5,8 @@ var theButton = document.getElementById('theButton');
 theButton.addEventListener('click', start);
 canvas.addEventListener('mousedown', onClick, false);
 
-var squareSize = 100;
+var gridSize = canvas.width;
+var squareSize = gridSize / 3;
 
 var grid = [
 	['', '', ''],
@@ -18,9 +19,8 @@ var tokens = {
 	ai: 'o'
 };
 
-var turn = 'player';
+var turn = 'ai';
 var gameOver = true;
-var winner = '';
 
 render(grid, ctx);
 
@@ -31,7 +31,7 @@ function start() {
 		aiPlays(grid, function() {
 			nextTurn();
 		});
-	}
+	} 
 }
 
 function render(grid, ctx) {
@@ -40,7 +40,7 @@ function render(grid, ctx) {
 	for (var i = 0; i < 3; i++) {
 		for (var j = 0; j < 3; j++) {
 			var piece = grid[i][j];
-			var color = piece === 'x' ? '#FF0000' : piece === 'o' ? '#0000FF' : '#EEEEEE';
+			var color = piece === 'x' ? '#FF0000' : piece === 'o' ? '#0000FF' : '#FFFFFF';
 			ctx.fillStyle = color;
 
 			ctx.fillRect(squareSize * j, squareSize * i, squareSize, squareSize);
@@ -91,16 +91,13 @@ function nextTurn() {
 function onClick(event) {
 	if (gameOver || turn !== 'player') return;
 
-	var x = event.pageY,
-		y = event.pageX;
+	var x = event.y,
+		y = event.x;
+
+	x -= canvas.offsetLeft;
+	y -= canvas.offsetTop;
+
 	var gridPos = [Math.floor(x / squareSize), Math.floor(y / squareSize)];
-
-	// Fix accuracy issues on the edges of boxes
-
-	var gridRow = gridPos[0];
-	var gridColumn = gridPos[1];
-
-	gridPos = [gridRow < 0 ? 0 : gridRow > 2 ? 2 : gridRow, gridColumn < 0 ? 0 : gridColumn > 2 ? 2 : gridColumn];
 
 	var validMove = play(grid, tokens.player, gridPos);
 
@@ -233,7 +230,6 @@ function nbOfOccurences(piece, array) {
 
 function reset(grid) {
 	gameOver = false;
-	winner = '';
 	turn = 'player';
 
 	for (var i = 0; i < 3; i++) {
