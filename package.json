@@ -11,7 +11,8 @@
   "jshintConfig": {
     "node": true,
     "strict": false,
-    "mocha": true
+    "mocha": true,
+    "devel": true
   },
   "directories": {
     "test": "test"
