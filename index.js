@@ -19,8 +19,9 @@ var tokens = {
 var turn = 'ai';
 var gameOver = true;
 var imgCache;
+var sprites;
 
-render(grid, ctx);
+init();
 
 function loadImages(imgURLs, done) {
 	if (imgURLs.length === 0) done();
@@ -32,7 +33,7 @@ function loadImages(imgURLs, done) {
 	imgURLs.forEach(function(imgURL) {
 		img = new Image();
 		img.src = imgURL;
-		img.onLoad = function() {
+		img.onload = function() {
 			imgs[imgURL] = img;
 			if (++imgLoadedCounter >= imgURLs.length) done(imgs);
 		};
@@ -41,15 +42,34 @@ function loadImages(imgURLs, done) {
 
 function init() {
 	if (!imgCache) {
-		loadImages([], function(imgs) {
+		loadImages(['img/tic-tac-toe-sprites.png'], function(imgs) {
 			imgCache = imgs;
+
+			sprites = {
+				'x': {
+					img: imgCache['img/tic-tac-toe-sprites.png'],
+					pos: [0, 0],
+					size: [263, 263]
+				},
+				'o': {
+					img: imgCache['img/tic-tac-toe-sprites.png'],
+					pos: [305, 4],
+					size: [294, 266]
+				},
+			};
+
+			// Initial rendering
+
+			render(grid, ctx);
+
+			// Enable user control
+
 			theButton.addEventListener('click', start);
 			canvas.addEventListener('mousedown', onClick, false);
 		});
 	}
-}
 
-init();
+}
 
 function start() {
 	gameOver = false;
@@ -67,14 +87,21 @@ function render(grid, ctx) {
 	for (var i = 0; i < 3; i++) {
 		for (var j = 0; j < 3; j++) {
 			var piece = grid[i][j];
-			var color = piece === 'x' ? '#FF0000' : piece === 'o' ? '#0000FF' : '#FFFFFF';
-			ctx.fillStyle = color;
 
-			ctx.fillRect(SQUARE_SIZE * j, SQUARE_SIZE * i, SQUARE_SIZE, SQUARE_SIZE);
+			if (piece) {
+				var pieceSprite = sprites[piece];
+				var offset = 10;
+				ctx.drawImage(pieceSprite.img, pieceSprite.pos[0], pieceSprite.pos[1], pieceSprite.size[0], pieceSprite.size[1], SQUARE_SIZE * j + offset, SQUARE_SIZE * i + offset, SQUARE_SIZE - offset * 2, SQUARE_SIZE - offset * 2);
+			} else {
+				ctx.fillStyle = '#FFFFFF';
+				ctx.fillRect(SQUARE_SIZE * j, SQUARE_SIZE * i, SQUARE_SIZE, SQUARE_SIZE);
+			}
 		}
 	}
 
 	// Render grid internal edges
+
+	ctx.fillStyle = '#5A5A5A';
 
 	ctx.beginPath();
 	ctx.moveTo(SQUARE_SIZE, 0);
@@ -333,9 +360,9 @@ function copyGrid(grid) {
 	return gridCopy;
 }
 
-function getNextMove(game, done) {
+function getNextMove(grid, done) {
 	setTimeout(function() {
-		minimax(game, true);
+		minimax(grid, true);
 		done(aiChoice);
 	}, 0);
 }
