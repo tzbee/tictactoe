@@ -31,7 +31,7 @@ function start() {
 		aiPlays(grid, function() {
 			nextTurn();
 		});
-	} 
+	}
 }
 
 function render(grid, ctx) {
@@ -251,16 +251,18 @@ function isFullGrid(grid) {
 
 // AI
 
-function evaluate(grid) {
+function evaluate(grid, depth) {
 	var winner = checkWinner(grid);
-	return !winner ? 0 : winner === tokens.ai ? 10 : -10;
+	return (!winner ? 0 : winner === tokens.ai ? 10 : -10) - depth;
 }
 
 var aiChoice;
 
-function minimax(grid, maximize) {
+function minimax(grid, maximize, depth) {
+	depth = depth || 0;
+
 	if (isFullGrid(grid) || checkWinner(grid)) {
-		return evaluate(grid);
+		return evaluate(grid, depth);
 	}
 
 	var gridCopy;
@@ -273,7 +275,7 @@ function minimax(grid, maximize) {
 			var move = [i, j];
 			var isValidMove = play(gridCopy, maximize ? tokens.ai : tokens.player, move);
 			if (isValidMove) {
-				scores.push(minimax(gridCopy, !maximize));
+				scores.push(minimax(gridCopy, !maximize, depth + 1));
 				moves.push(move);
 			}
 		}
