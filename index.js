@@ -2,11 +2,8 @@ var canvas = document.getElementById('gridCanvas');
 var ctx = canvas.getContext('2d');
 var theButton = document.getElementById('theButton');
 
-theButton.addEventListener('click', start);
-canvas.addEventListener('mousedown', onClick, false);
-
-var gridSize = canvas.width;
-var squareSize = gridSize / 3;
+var GRID_SIZE = canvas.width;
+var SQUARE_SIZE = GRID_SIZE / 3;
 
 var grid = [
 	['', '', ''],
@@ -21,8 +18,38 @@ var tokens = {
 
 var turn = 'ai';
 var gameOver = true;
+var imgCache;
 
 render(grid, ctx);
+
+function loadImages(imgURLs, done) {
+	if (imgURLs.length === 0) done();
+
+	var imgLoadedCounter = 0;
+	var img;
+	var imgs = {};
+
+	imgURLs.forEach(function(imgURL) {
+		img = new Image();
+		img.src = imgURL;
+		img.onLoad = function() {
+			imgs[imgURL] = img;
+			if (++imgLoadedCounter >= imgURLs.length) done(imgs);
+		};
+	});
+}
+
+function init() {
+	if (!imgCache) {
+		loadImages([], function(imgs) {
+			imgCache = imgs;
+			theButton.addEventListener('click', start);
+			canvas.addEventListener('mousedown', onClick, false);
+		});
+	}
+}
+
+init();
 
 function start() {
 	gameOver = false;
@@ -43,30 +70,30 @@ function render(grid, ctx) {
 			var color = piece === 'x' ? '#FF0000' : piece === 'o' ? '#0000FF' : '#FFFFFF';
 			ctx.fillStyle = color;
 
-			ctx.fillRect(squareSize * j, squareSize * i, squareSize, squareSize);
+			ctx.fillRect(SQUARE_SIZE * j, SQUARE_SIZE * i, SQUARE_SIZE, SQUARE_SIZE);
 		}
 	}
 
 	// Render grid internal edges
 
 	ctx.beginPath();
-	ctx.moveTo(squareSize, 0);
-	ctx.lineTo(squareSize, 300);
+	ctx.moveTo(SQUARE_SIZE, 0);
+	ctx.lineTo(SQUARE_SIZE, GRID_SIZE);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.moveTo(squareSize * 2, 0);
-	ctx.lineTo(squareSize * 2, 300);
+	ctx.moveTo(SQUARE_SIZE * 2, 0);
+	ctx.lineTo(SQUARE_SIZE * 2, GRID_SIZE);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.moveTo(0, squareSize);
-	ctx.lineTo(300, squareSize);
+	ctx.moveTo(0, SQUARE_SIZE);
+	ctx.lineTo(GRID_SIZE, SQUARE_SIZE);
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.moveTo(0, squareSize * 2);
-	ctx.lineTo(300, squareSize * 2);
+	ctx.moveTo(0, SQUARE_SIZE * 2);
+	ctx.lineTo(GRID_SIZE, SQUARE_SIZE * 2);
 	ctx.stroke();
 }
 
@@ -97,7 +124,7 @@ function onClick(event) {
 	x -= canvas.offsetLeft;
 	y -= canvas.offsetTop;
 
-	var gridPos = [Math.floor(x / squareSize), Math.floor(y / squareSize)];
+	var gridPos = [Math.floor(x / SQUARE_SIZE), Math.floor(y / SQUARE_SIZE)];
 
 	var validMove = play(grid, tokens.player, gridPos);
 
