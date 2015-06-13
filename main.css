@@ -18,6 +18,10 @@
 	font-size: 70px;
 }
 
+.button {
+    cursor:default;
+}
+
 .button:hover {
 	color: #AA3333;
 }
