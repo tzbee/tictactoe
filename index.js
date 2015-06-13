@@ -177,6 +177,7 @@ function onClick(event) {
 }
 
 function aiPlays(grid) {
+	enableGameToHuman = false;
 	getNextMove(grid, function(nextMove) {
 		play(grid, tokens.ai, nextMove);
 		showHumanTurn();
