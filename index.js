@@ -93,7 +93,7 @@ function emptyGrid(grid) {
 			grid[i][j] = '';
 		}
 	}
-	
+
 	render(grid, ctx);
 }
 
@@ -173,17 +173,13 @@ function onClick(event) {
 
 	var validMove = play(grid, tokens.player, gridPos);
 
-	if (validMove) {
-		if (!renderAndCheckWinner()) aiPlays(grid);
-	}
+	if (validMove && !renderAndCheckWinner()) aiPlays(grid);
 }
 
 function aiPlays(grid) {
 	getNextMove(grid, function(nextMove) {
 		play(grid, tokens.ai, nextMove);
 		showHumanTurn();
-		renderAndCheckWinner();
-
 		if (!renderAndCheckWinner()) enableGameToHuman = true;
 	});
 

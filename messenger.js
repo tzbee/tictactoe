@@ -15,17 +15,21 @@ function Messenger(messageBox, firstToPlayBox, aiPiece) {
 	};
 
 	this.thinking = function() {
-		this.firstToPlayBox.style.visibility = 'hidden';
+		toggleFirstToPlayBox(false);
 		this.write('I am thinking..');
 	};
 
 	this.humanTurn = function() {
-		this.firstToPlayBox.style.visibility = 'hidden';
+		toggleFirstToPlayBox(false);
 		this.write('Your turn, human');
 	};
 
+	function toggleFirstToPlayBox(enabled) {
+		this.firstToPlayBox.style.visibility = enabled ? 'visible' : 'hidden';
+	}
+
 	this.gameIsOver = function(winner) {
 		this.write(!winner ? 'Draw' : winner === aiPiece ? 'I win' : 'This..is impossible');
-		this.firstToPlayBox.style.visibility = 'visible';
+		toggleFirstToPlayBox(true);
 	};
 }
