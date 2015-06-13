@@ -338,9 +338,39 @@ function minimax(grid, maximize, depth) {
 		}, 1000);
 	}
 
-	aiChoice = moves[scores.indexOf(result)];
+	var indexes = getAllIndexesOf(result, scores);
+	var index;
+
+	var indexOfCenterMove = indexes.filter(function(i) {
+		return positionDeepEqual(moves[i], [1, 1]);
+	});
+
+	if (indexOfCenterMove.length > 0) {
+		index = indexOfCenterMove[0];
+	} else {
+		// Randomise equally valued moves
+		index = indexes[getRandomValue(indexes.length)];
+	}
+
+	aiChoice = moves[index];
 
 	return result;
+}
+
+function positionDeepEqual(pos1, pos2) {
+	return pos1[0] === pos2[0] && pos1[1] === pos2[1];
+}
+
+function getAllIndexesOf(value, array) {
+	var indexes = [];
+	for (var i = 0; i < array.length; i++) {
+		if (value === array[i]) indexes.push(i);
+	}
+	return indexes;
+}
+
+function getRandomValue(n) {
+	return Math.floor(Math.random() * n);
 }
 
 function copyGrid(grid) {
