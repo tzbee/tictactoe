@@ -345,12 +345,8 @@ function minimax(grid, maximize, depth) {
 		return positionDeepEqual(moves[i], [1, 1]);
 	});
 
-	if (indexOfCenterMove.length > 0) {
-		index = indexOfCenterMove[0];
-	} else {
-		// Randomise equally valued moves
-		index = indexes[getRandomValue(indexes.length)];
-	}
+	// If center available as best valued move, pick random best moves
+	index = indexOfCenterMove.length > 0 ? indexOfCenterMove[0] : indexes[getRandomValue(indexes.length)];
 
 	aiChoice = moves[index];
 
