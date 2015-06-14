@@ -338,23 +338,13 @@ function minimax(grid, maximize, depth) {
 		}, 1000);
 	}
 
+	// Get all best moves and pick a random one  
 	var indexes = getAllIndexesOf(result, scores);
-	var index;
-
-	var indexOfCenterMove = indexes.filter(function(i) {
-		return positionDeepEqual(moves[i], [1, 1]);
-	});
-
-	// If center available as best valued move, pick it, else pick random best moves
-	index = indexOfCenterMove.length > 0 ? indexOfCenterMove[0] : indexes[getRandomValue(indexes.length)];
-
+	var index = indexes[getRandomValue(indexes.length)];
+	
 	aiChoice = moves[index];
 
 	return result;
-}
-
-function positionDeepEqual(pos1, pos2) {
-	return pos1[0] === pos2[0] && pos1[1] === pos2[1];
 }
 
 function getAllIndexesOf(value, array) {
