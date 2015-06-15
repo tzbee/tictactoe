@@ -11,16 +11,46 @@ var grid = [
 	['', '', '']
 ];
 
-var tokens = {
-	player: 'x',
-	ai: 'o'
-};
-
 var enableGameToHuman = false;
 var imgCache;
 var sprites;
 
-var messenger = new Messenger(document.getElementById('messageBox'), document.getElementById('firstToPlayBox'), tokens.ai);
+var players = [new ExpertAI('x'), new RandomAI('o')];
+var currentPlayerIndex;
+
+function start(firstTurn) {
+	currentPlayerIndex = firstTurn;
+	emptyGrid(grid);
+	playerPlays();
+}
+
+function nextPlayer() {
+	currentPlayerIndex = currentPlayerIndex === 0 ? 1 : 0;
+}
+
+function playerPlays() {
+	var currentPlayer = players[currentPlayerIndex];
+
+	if (currentPlayer.type === 'ai') {
+		enableGameToHuman = false;
+
+		showAiIsThinking();
+
+		currentPlayer.getNextMove(grid, function(nextMove) {
+			play(grid, currentPlayer.token, nextMove);
+			if (!renderAndCheckWinner()) {
+				nextPlayer();
+				playerPlays();
+			}
+		});
+
+	} else if (currentPlayer.type === 'human') {
+		enableGameToHuman = true;
+		showHumanTurn();
+	}
+}
+
+var messenger = new Messenger(document.getElementById('messageBox'), document.getElementById('firstToPlayBox'));
 
 init();
 
@@ -66,24 +96,13 @@ function init() {
 			canvas.addEventListener('mousedown', onClick, false);
 
 			document.getElementById('humanFirst').onclick = function() {
-				start('human');
+				start(0);
 			};
 
 			document.getElementById('aiFirst').onclick = function() {
-				start('ai');
+				start(1);
 			};
 		});
-	}
-}
-
-function start(firstTurn) {
-	emptyGrid(grid);
-
-	if (firstTurn === 'ai') {
-		aiPlays(grid);
-	} else if (firstTurn === 'human') {
-		showHumanTurn();
-		enableGameToHuman = true;
 	}
 }
 
@@ -167,24 +186,18 @@ function getMousePos(event) {
 function onClick(event) {
 	if (!enableGameToHuman) return;
 
+	var currentPlayer = players[currentPlayerIndex];
+
 	var mousePos = getMousePos(event);
 
 	var gridPos = [Math.floor(mousePos[1] / SQUARE_SIZE), Math.floor(mousePos[0] / SQUARE_SIZE)];
 
-	var validMove = play(grid, tokens.player, gridPos);
+	var validMove = play(grid, currentPlayer.token, gridPos);
 
-	if (validMove && !renderAndCheckWinner()) aiPlays(grid);
-}
-
-function aiPlays(grid) {
-	enableGameToHuman = false;
-	getNextMove(grid, function(nextMove) {
-		play(grid, tokens.ai, nextMove);
-		showHumanTurn();
-		if (!renderAndCheckWinner()) enableGameToHuman = true;
-	});
-
-	showAiIsThinking();
+	if (validMove && !renderAndCheckWinner()) {
+		nextPlayer();
+		playerPlays();
+	}
 }
 
 function showAiIsThinking() {
@@ -294,82 +307,109 @@ function isFullGrid(grid) {
 	return true;
 }
 
-// AI
+function ExpertAI(token) {
+	this.token = token;
+	this.type = 'ai';
 
-function evaluate(grid, depth) {
-	var winner = checkWinner(grid);
-	return (!winner ? 0 : winner === tokens.ai ? 10 : -10) - depth;
-}
+	this.evaluate = function(grid, depth) {
+		var winner = checkWinner(grid);
+		return (!winner ? 0 : winner === this.token ? 10 : -10) - depth;
+	};
 
-var aiChoice;
+	this.minimax = function(grid, maximize, depth) {
+		depth = depth || 0;
 
-function minimax(grid, maximize, depth) {
-	depth = depth || 0;
+		if (isFullGrid(grid) || checkWinner(grid)) {
+			return this.evaluate(grid, depth);
+		}
 
-	if (isFullGrid(grid) || checkWinner(grid)) {
-		return evaluate(grid, depth);
-	}
+		var gridCopy;
+		var scores = [];
+		var moves = [];
 
-	var gridCopy;
-	var scores = [];
-	var moves = [];
-
-	for (var i = 0; i < 3; i++) {
-		for (var j = 0; j < 3; j++) {
-			gridCopy = copyGrid(grid);
-			var move = [i, j];
-			var isValidMove = play(gridCopy, maximize ? tokens.ai : tokens.player, move);
-			if (isValidMove) {
-				scores.push(minimax(gridCopy, !maximize, depth + 1));
-				moves.push(move);
+		for (var i = 0; i < 3; i++) {
+			for (var j = 0; j < 3; j++) {
+				gridCopy = copyGrid(grid);
+				var move = [i, j];
+				var isValidMove = play(gridCopy, maximize ? this.token : (this.token === 'x' ? 'o' : 'x'), move);
+				if (isValidMove) {
+					scores.push(this.minimax(gridCopy, !maximize, depth + 1));
+					moves.push(move);
+				}
 			}
 		}
+
+		var result;
+
+		if (maximize) {
+			result = scores.reduce(function(max, score) {
+				return score > max ? score : max;
+			}, -1000);
+		} else {
+			result = scores.reduce(function(min, score) {
+				return score < min ? score : min;
+			}, 1000);
+		}
+
+		// Get all best moves and pick a random one  
+		var indexes = getAllIndexesOf(result, scores);
+		var index = indexes[getRandomValue(indexes.length)];
+
+		this.aiChoice = moves[index];
+
+		return result;
+	};
+
+	function getAllIndexesOf(value, array) {
+		var indexes = [];
+		for (var i = 0; i < array.length; i++) {
+			if (value === array[i]) indexes.push(i);
+		}
+		return indexes;
 	}
 
-	var result;
-
-	if (maximize) {
-		result = scores.reduce(function(max, score) {
-			return score > max ? score : max;
-		}, -1000);
-	} else {
-		result = scores.reduce(function(min, score) {
-			return score < min ? score : min;
-		}, 1000);
+	function getRandomValue(n) {
+		return Math.floor(Math.random() * n);
 	}
 
-	// Get all best moves and pick a random one  
-	var indexes = getAllIndexesOf(result, scores);
-	var index = indexes[getRandomValue(indexes.length)];
-	
-	aiChoice = moves[index];
-
-	return result;
-}
-
-function getAllIndexesOf(value, array) {
-	var indexes = [];
-	for (var i = 0; i < array.length; i++) {
-		if (value === array[i]) indexes.push(i);
+	function copyGrid(grid) {
+		var gridCopy = [];
+		for (var i = 0; i < 3; i++) {
+			gridCopy.push(grid[i].slice());
+		}
+		return gridCopy;
 	}
-	return indexes;
+
+	this.getNextMove = function(grid, done) {
+		setTimeout(function() {
+			this.minimax(grid, true);
+			done(this.aiChoice);
+		}.bind(this), 100);
+	};
 }
 
-function getRandomValue(n) {
-	return Math.floor(Math.random() * n);
+function HumanPlayer(token) {
+	this.token = token;
+	this.type = 'human';
 }
 
-function copyGrid(grid) {
-	var gridCopy = [];
-	for (var i = 0; i < 3; i++) {
-		gridCopy.push(grid[i].slice());
+function RandomAI(token) {
+	this.token = token;
+	this.type = 'ai';
+
+	this.getNextMove = function(grid, done) {
+		var move = [getRandomNumber(), getRandomNumber()];
+		while (!isValidPosition(grid, move)) {
+			move = [getRandomNumber(), getRandomNumber()];
+		}
+		done(move);
+	};
+
+	function getRandomNumber() {
+		var random = Math.floor(Math.random() * 3);
+		while (random === 3) {
+			random = Math.floor(Math.random() * 3);
+		}
+		return random;
 	}
-	return gridCopy;
-}
-
-function getNextMove(grid, done) {
-	setTimeout(function() {
-		minimax(grid, true);
-		done(aiChoice);
-	}, 100);
 }

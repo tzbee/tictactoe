@@ -1,6 +1,6 @@
 module.exports = Messenger;
 
-function Messenger(messageBox, firstToPlayBox, aiPiece) {
+function Messenger(messageBox, firstToPlayBox) {
 	this.messageBox = messageBox;
 	this.firstToPlayBox = firstToPlayBox;
 
@@ -29,7 +29,7 @@ function Messenger(messageBox, firstToPlayBox, aiPiece) {
 	}
 
 	this.gameIsOver = function(winner) {
-		this.write(!winner ? 'Draw' : winner === aiPiece ? 'I win' : 'This..is impossible');
+		this.write(!winner ? 'Draw' : winner + ' wins');
 		toggleFirstToPlayBox(true);
 	};
 }
