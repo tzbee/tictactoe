@@ -12,7 +12,8 @@
     "node": true,
     "strict": false,
     "mocha": true,
-    "devel": true
+    "devel": true,
+    "jquery": true
   },
   "directories": {
     "test": "test"

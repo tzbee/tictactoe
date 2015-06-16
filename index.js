@@ -15,8 +15,43 @@ var enableGameToHuman = false;
 var imgCache;
 var sprites;
 
-var players = [new ExpertAI('x'), new RandomAI('o')];
+var players = [];
 var currentPlayerIndex;
+
+var tokens = ['x', 'o'];
+
+var MenuManager = require('./menu-manager');
+
+
+var menuItems = ['human', 'expert', 'dumb'];
+var player1Menu = new MenuManager($('#player1'), menuItems);
+var player2Menu = new MenuManager($('#player2'), menuItems);
+
+$('#startButton').on('click', function() {
+	var player1 = player1Menu.getSelectedItem();
+	var player2 = player2Menu.getSelectedItem();
+
+	updatePlayers(player1, player2);
+	start(0);
+});
+
+function createPlayer(playerTypeId, token) {
+	switch (playerTypeId) {
+		case 'expert':
+			return new ExpertAI(token);
+		case 'dumb':
+			return new RandomAI(token);
+		case 'human':
+			return new HumanPlayer(token);
+		default:
+			return new ExpertAI(token);
+	}
+}
+
+function updatePlayers(playerType1, playerType2) {
+	players[0] = createPlayer(playerType1, tokens[0]);
+	players[1] = createPlayer(playerType2, tokens[1]);
+}
 
 function start(firstTurn) {
 	currentPlayerIndex = firstTurn;

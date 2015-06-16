@@ -40,3 +40,22 @@ span.button {
 	margin-left: 40px;
 	margin-right: 40px;
 }
+
+
+#container {
+	float: left;
+}
+
+#settingsContainer {
+	float: right;
+}
+
+.menu {
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+.menu-item {
+	margin-top: 5px;
+	margin-bottom: 5px; 
+}
