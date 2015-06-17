@@ -20,12 +20,11 @@ var currentPlayerIndex;
 
 var tokens = ['x', 'o'];
 
-var MenuManager = require('./menu-manager');
-
+var SelectMenu = require('./select-menu');
 
 var menuItems = ['human', 'expert', 'dumb'];
-var player1Menu = new MenuManager($('#player1'), menuItems);
-var player2Menu = new MenuManager($('#player2'), menuItems);
+var player1Menu = new SelectMenu($('#player1'), menuItems);
+var player2Menu = new SelectMenu($('#player2'), menuItems);
 
 $('#startButton').on('click', function() {
 	var player1 = player1Menu.getSelectedItem();

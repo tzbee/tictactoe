@@ -59,3 +59,7 @@ span.button {
 	margin-top: 5px;
 	margin-bottom: 5px; 
 }
+
+.selected-item {
+	display: none;
+}
