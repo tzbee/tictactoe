@@ -41,11 +41,9 @@ function SelectMenu($menuContainer, items) {
 
 	$menuContainer.on('mouseenter', function() {
 		$menu.show();
-	}.bind(this));
-
-	$menuContainer.on('mouseleave', function() {
+	}).on('mouseleave', function() {
 		$menu.hide();
-	}.bind(this));
+	});
 
 	init($menu, $selectedBox, items);
 
