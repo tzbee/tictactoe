@@ -1,6 +1,5 @@
 var canvas = document.getElementById('gridCanvas');
 var ctx = canvas.getContext('2d');
-var Messenger = require('./messenger');
 
 var GRID_SIZE = canvas.width;
 var SQUARE_SIZE = GRID_SIZE / 3;
@@ -23,6 +22,7 @@ var tokens = ['x', 'o'];
 var SelectMenu = require('./select-menu');
 
 var menuItems = ['human', 'expert', 'dumb'];
+
 var player1Menu = new SelectMenu($('#player1'), menuItems);
 var player2Menu = new SelectMenu($('#player2'), menuItems);
 
@@ -68,8 +68,6 @@ function playerPlays() {
 	if (currentPlayer.type === 'ai') {
 		enableGameToHuman = false;
 
-		showAiIsThinking();
-
 		currentPlayer.getNextMove(grid, function(nextMove) {
 			play(grid, currentPlayer.token, nextMove);
 			if (!renderAndCheckWinner()) {
@@ -80,11 +78,8 @@ function playerPlays() {
 
 	} else if (currentPlayer.type === 'human') {
 		enableGameToHuman = true;
-		showHumanTurn();
 	}
 }
-
-var messenger = new Messenger(document.getElementById('messageBox'), document.getElementById('firstToPlayBox'));
 
 init();
 
@@ -124,18 +119,9 @@ function init() {
 			};
 
 			// Initial rendering
-
 			render(grid, ctx);
 
 			canvas.addEventListener('mousedown', onClick, false);
-
-			document.getElementById('humanFirst').onclick = function() {
-				start(0);
-			};
-
-			document.getElementById('aiFirst').onclick = function() {
-				start(1);
-			};
 		});
 	}
 }
@@ -201,7 +187,6 @@ function renderAndCheckWinner() {
 
 	if (winner || isFullGrid(grid)) {
 		enableGameToHuman = false;
-		showWinner(winner);
 		return true;
 	}
 
@@ -234,17 +219,6 @@ function onClick(event) {
 	}
 }
 
-function showAiIsThinking() {
-	messenger.thinking();
-}
-
-function showHumanTurn() {
-	messenger.humanTurn();
-}
-
-function showWinner(winner) {
-	messenger.gameIsOver(winner);
-}
 
 function checkWinner(grid) {
 	var winner;

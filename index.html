@@ -14,35 +14,23 @@
 			Your browser does not support the HTML5 canvas tag.
 		</canvas>
 
-		<div id='messageBox' class="handWritten" style="display:none"></div>
-
-		<div id='firstToPlayBox' class='handWritten'>
-
-			<span id='humanFirst' class='button'>
-				Human plays first
-			</span>		
-
-			<span id='aiFirst' class='button'>
-				I play first
-			</span>
+		<div id="playerChoiceContainer" style ="margin: auto; width:75% " class="handWritten">
+			<div id="player1" style ="float: left;margin-left:25px;margin-right:25px;" >
+				<div class="selected"></div>
+				<ul class="menu">
+				</ul>
+			</div>
+			<span style ="float: left;margin-left:25px;margin-right:25px;">VS</span>
+			<div id="player2" style ="float: left;margin-left:25px;margin-right:25px;">
+				<div class="selected"></div>
+				<ul class="menu">
+				</ul>
+			</div> 
 		</div>
-	</div>
+		
+		<div id="startButton" class="handWritten button" style="width:100%;text-align:center">START</div>
 
-	<div id="settingsContainer" class="handWritten">
-		<div id="player1"  style="float: left; margin-left: 20px; margin-right: 20px;">
-			<div class="selected"></div>
-			<ul class="menu">
-			</ul>
-		</div>
-		<div id="player2" style="float: right; margin-left: 20px; margin-right: 20px;">
-			<div class="selected"></div>
-			<ul class="menu">
-			</ul>
-		</div> 
 	</div>
-	
-	<div id="startButton" class="handWritten button">START</div>
-
 	<script src="build/bundle.js">
 	</script>
 	</body>
