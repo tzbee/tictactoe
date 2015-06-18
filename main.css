@@ -3,6 +3,10 @@
 	src: url(font/Mumsies.ttf);
 } 
 
+body{
+	font-size: 1.1em;
+}
+
 .handWritten {
 	font-family: messy;
 }

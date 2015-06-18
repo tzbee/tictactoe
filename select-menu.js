@@ -25,12 +25,12 @@ function SelectMenu($menuContainer, items) {
 					$menu.children('.selected-item').removeClass('selected-item');
 					$menuItem.addClass('selected-item');
 
-					$menu.hide();
+					$menu.css('visibility', 'hidden');
 				}
 			}));
 		});
 
-		$menu.hide();
+		$menu.css('visibility', 'hidden');
 	}
 
 	function firstLetterToUpperCase(str) {
@@ -40,9 +40,9 @@ function SelectMenu($menuContainer, items) {
 	}
 
 	$menuContainer.on('mouseenter', function() {
-		$menu.show();
+		$menu.css('visibility', 'visible');
 	}).on('mouseleave', function() {
-		$menu.hide();
+		$menu.css('visibility', 'hidden');
 	});
 
 	init($menu, $selectedBox, items);
