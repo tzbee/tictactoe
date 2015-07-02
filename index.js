@@ -294,6 +294,16 @@ function isFullGrid(grid) {
 	return true;
 }
 
+function isEmptyGrid(grid) {
+	for (var i = 0; i < 3; i++) {
+		for (var j = 0; j < 3; j++) {
+			if (grid[i][j]) return false;
+		}
+	}
+
+	return true;
+}
+
 // AI
 
 function evaluate(grid, depth) {
@@ -305,6 +315,12 @@ var aiChoice;
 
 function minimax(grid, maximize, depth) {
 	depth = depth || 0;
+
+	// Play randomly the first turn (does not matter for weak solving)
+	if (isEmptyGrid(grid)) {
+		aiChoice = getRandomMove();
+		return -9;
+	}
 
 	if (isFullGrid(grid) || checkWinner(grid)) {
 		return evaluate(grid, depth);
@@ -340,8 +356,8 @@ function minimax(grid, maximize, depth) {
 
 	// Get all best moves and pick a random one  
 	var indexes = getAllIndexesOf(result, scores);
-	var index = indexes[getRandomValue(indexes.length)];
-	
+	var index = indexes[getRandomValue(indexes.length - 1)];
+
 	aiChoice = moves[index];
 
 	return result;
@@ -355,8 +371,18 @@ function getAllIndexesOf(value, array) {
 	return indexes;
 }
 
+function getRandomMove() {
+	return [getRandomValue(2), getRandomValue(2)];
+}
+
 function getRandomValue(n) {
-	return Math.floor(Math.random() * n);
+	var random = Math.floor(Math.random() * (n + 1));
+
+	while (random === n + 1) {
+		random = Math.floor(Math.random() * (n + 1));
+	}
+
+	return random;
 }
 
 function copyGrid(grid) {
