@@ -1,4 +1,5 @@
 /node_modules
-/build
+/public
 /test
 test.js
+package-lock.json

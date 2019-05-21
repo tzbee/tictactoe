@@ -4,7 +4,10 @@
   "description": "Javascript implementation of Tic Tac Toe game",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "dev": "browserify src/index.js -o public/bundle.js",
+    "start": "http-server ./public",
+    "build": "npm run dev"
   },
   "author": "tzbee",
   "license": "MIT",
@@ -22,6 +25,10 @@
     "game"
   ],
   "devDependencies": {
+    "browserify": "^16.2.3",
     "mocha": "*"
+  },
+  "dependencies": {
+    "http-server": "^0.11.1"
   }
 }

@@ -1,20 +1,15 @@
-Description
-==========
+# Description
 
-A simple tic tac toe implementation with html5 canvas 
+A simple tic tac toe implementation with html5 canvas
 
-Example
-==========
+# Example
 
-https://tzbee.herokuapp.com/
+http://tictactoe.tzbee.me/
 
-Build
-==========
+# Build
 
-Create a /build directory in the project root.
-Run browserify index.js -o build/bundle.js 
+Run `npm run dev`
 
-Run
-==========
+# Run
 
-Open index.html in your browser
+Run `npm start`
