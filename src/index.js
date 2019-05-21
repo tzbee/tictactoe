@@ -5,11 +5,7 @@ var Messenger = require('./messenger');
 var GRID_SIZE = canvas.width;
 var SQUARE_SIZE = GRID_SIZE / 3;
 
-var grid = [
-	['', '', ''],
-	['', '', ''],
-	['', '', '']
-];
+var grid = [['', '', ''], ['', '', ''], ['', '', '']];
 
 var tokens = {
 	player: 'x',
@@ -20,7 +16,11 @@ var enableGameToHuman = false;
 var imgCache;
 var sprites;
 
-var messenger = new Messenger(document.getElementById('messageBox'), document.getElementById('firstToPlayBox'), tokens.ai);
+var messenger = new Messenger(
+	document.getElementById('messageBox'),
+	document.getElementById('firstToPlayBox'),
+	tokens.ai
+);
 
 init();
 
@@ -47,16 +47,16 @@ function init() {
 			imgCache = imgs;
 
 			sprites = {
-				'o': {
+				o: {
 					img: imgCache['img/tic-tac-toe-sprites.png'],
 					pos: [0, 0],
 					size: [263, 263]
 				},
-				'x': {
+				x: {
 					img: imgCache['img/tic-tac-toe-sprites.png'],
 					pos: [305, 4],
 					size: [294, 266]
-				},
+				}
 			};
 
 			// Initial rendering
@@ -112,7 +112,17 @@ function render(grid, ctx) {
 			if (piece) {
 				var pieceSprite = sprites[piece];
 				var offset = 10;
-				ctx.drawImage(pieceSprite.img, pieceSprite.pos[0], pieceSprite.pos[1], pieceSprite.size[0], pieceSprite.size[1], SQUARE_SIZE * j + offset, SQUARE_SIZE * i + offset, SQUARE_SIZE - offset * 2, SQUARE_SIZE - offset * 2);
+				ctx.drawImage(
+					pieceSprite.img,
+					pieceSprite.pos[0],
+					pieceSprite.pos[1],
+					pieceSprite.size[0],
+					pieceSprite.size[1],
+					SQUARE_SIZE * j + offset,
+					SQUARE_SIZE * i + offset,
+					SQUARE_SIZE - offset * 2,
+					SQUARE_SIZE - offset * 2
+				);
 			}
 		}
 	}
@@ -169,7 +179,10 @@ function onClick(event) {
 
 	var mousePos = getMousePos(event);
 
-	var gridPos = [Math.floor(mousePos[1] / SQUARE_SIZE), Math.floor(mousePos[0] / SQUARE_SIZE)];
+	var gridPos = [
+		Math.floor(mousePos[1] / SQUARE_SIZE),
+		Math.floor(mousePos[0] / SQUARE_SIZE)
+	];
 
 	var validMove = play(grid, tokens.player, gridPos);
 
@@ -231,7 +244,7 @@ function play(grid, token, pos) {
 }
 
 function isValidPosition(grid, pos) {
-	if (!pos || pos && pos.length !== 2) return false;
+	if (!pos || (pos && pos.length !== 2)) return false;
 
 	var row = grid[pos[0]];
 
@@ -334,7 +347,11 @@ function minimax(grid, maximize, depth) {
 		for (var j = 0; j < 3; j++) {
 			gridCopy = copyGrid(grid);
 			var move = [i, j];
-			var isValidMove = play(gridCopy, maximize ? tokens.ai : tokens.player, move);
+			var isValidMove = play(
+				gridCopy,
+				maximize ? tokens.ai : tokens.player,
+				move
+			);
 			if (isValidMove) {
 				scores.push(minimax(gridCopy, !maximize, depth + 1));
 				moves.push(move);
@@ -354,7 +371,7 @@ function minimax(grid, maximize, depth) {
 		}, 1000);
 	}
 
-	// Get all best moves and pick a random one  
+	// Get all best moves and pick a random one
 	var indexes = getAllIndexesOf(result, scores);
 	var index = indexes[getRandomValue(indexes.length - 1)];
 

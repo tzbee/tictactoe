@@ -1,7 +1,15 @@
+body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100vw;
+	height: 100vh;
+}
+
 @font-face {
 	font-family: messy;
 	src: url(font/Mumsies.ttf);
-} 
+}
 
 .handWritten {
 	font-family: messy;
@@ -24,7 +32,7 @@
 }
 
 .button:hover {
-	color: #AA3333;
+	color: #aa3333;
 }
 
 #container {
